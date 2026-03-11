@@ -18,7 +18,7 @@ Option Explicit
 ' キャンセルされたかどうかのフラグ
 Public IsCancelled As Boolean
 ' 選択されたシート名のコレクション
-Public SelectedSheets As Collection
+Public selectedSheets As Collection
 
 ' イベント抑止フラグ（全選択時の連動ループ用）
 Private isEventsDisabled As Boolean
@@ -31,15 +31,14 @@ Public Sub SetSheetList(ByVal srcWorkbook As Workbook)
     Dim ws As Worksheet
     Dim i As Long
     Dim sheetName As String
+    Dim alreadyAdded As Boolean   ' ← ループ外に移動
     
-    ' 存在するシートのうち「受領分」を含むものを辞書に格納
     For Each ws In srcWorkbook.Worksheets
         If InStr(ws.Name, "受領分") > 0 Then
             dict(ws.Name) = True
         End If
     Next ws
     
-    ' 正規順序で並べてリストに追加
     Dim orderedSheets(14) As String
     orderedSheets(0) = "1月受領分"
     orderedSheets(1) = "2月受領分"
@@ -59,22 +58,18 @@ Public Sub SetSheetList(ByVal srcWorkbook As Workbook)
     
     With Me.lstMonths
         .Clear
-        ' 先頭に全選択項目を追加
         .AddItem "【全受領月シート対象】"
         
-        ' 正規順序で存在するシートのみ追加
         For i = 0 To 14
             If dict.Exists(orderedSheets(i)) Then
                 .AddItem orderedSheets(i)
             End If
         Next i
         
-        ' 正規順序に含まれないシート名も末尾に追加
-        ' （例：独自名称のシートが存在する場合の保険）
+        ' 正規順序に含まれないシート名を末尾に追加
         For Each ws In srcWorkbook.Worksheets
             If InStr(ws.Name, "受領分") > 0 Then
-                Dim alreadyAdded As Boolean
-                alreadyAdded = False
+                alreadyAdded = False          ' ← 毎回明示的にリセット
                 For i = 0 To 14
                     If ws.Name = orderedSheets(i) Then
                         alreadyAdded = True
@@ -87,8 +82,8 @@ Public Sub SetSheetList(ByVal srcWorkbook As Workbook)
             End If
         Next ws
         
-        .ListStyle = 1   ' チェックボックス形式
-        .MultiSelect = 1 ' 複数選択
+        .ListStyle = 1
+        .MultiSelect = 1
     End With
     
     Set dict = Nothing
@@ -99,7 +94,7 @@ End Sub
 '=========================================================
 Private Sub UserForm_Initialize()
     IsCancelled = True
-    Set SelectedSheets = New Collection
+    Set selectedSheets = New Collection
     isEventsDisabled = False
     
     With Me.lstMonths
@@ -149,12 +144,12 @@ Private Sub btnRun_Click()
     Dim isSelected As Boolean
     
     isSelected = False
-    Set SelectedSheets = New Collection
+    Set selectedSheets = New Collection
     
     With Me.lstMonths
         For i = 1 To .ListCount - 1
             If .Selected(i) Then
-                SelectedSheets.Add .List(i)
+                selectedSheets.Add .List(i)
                 isSelected = True
             End If
         Next i

@@ -128,8 +128,8 @@ Private Function BuildOfficeListFromExternalMaster(ByVal branchName As String) A
     Dim officeVal As String
     
     Do While Not rs.EOF
-branchVal = Trim(CStr(IIf(IsNull(rs.Fields(1).Value), "", rs.Fields(1).Value)))  ' B列：支店名
-officeVal = Trim(CStr(IIf(IsNull(rs.Fields(2).Value), "", rs.Fields(2).Value)))  ' C列：出張所名
+branchVal = Trim(CStr(IIf(IsNull(rs.fields(1).Value), "", rs.fields(1).Value)))  ' B列：支店名
+officeVal = Trim(CStr(IIf(IsNull(rs.fields(2).Value), "", rs.fields(2).Value)))  ' C列：出張所名
         
         ' 支店名の一致チェック（完全一致 / 「支店」付き / 前方一致）
         If branchVal = targetBranch Or _
@@ -265,8 +265,8 @@ Private Sub SetD2RoomCombinations(ByVal officeName As String)
     Do While Not rs.EOF
         Dim cOffice As String
         Dim cRoom As String
-        cOffice = Trim(CStr(IIf(IsNull(rs.Fields(2).Value), "", rs.Fields(2).Value))) ' C列：出張所名
-        cRoom = Trim(CStr(IIf(IsNull(rs.Fields(5).Value), "", rs.Fields(5).Value)))   ' F列：管理室名
+        cOffice = Trim(CStr(IIf(IsNull(rs.fields(2).Value), "", rs.fields(2).Value))) ' C列：出張所名
+        cRoom = Trim(CStr(IIf(IsNull(rs.fields(5).Value), "", rs.fields(5).Value)))   ' F列：管理室名
 
         If cOffice <> "" Then currentOffice = cOffice
 

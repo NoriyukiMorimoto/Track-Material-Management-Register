@@ -14,6 +14,19 @@ Private oldF1 As Variant
 Private oldD3 As Variant
 Private cancelClear As Boolean
 Private Sub Worksheet_Change(ByVal Target As Range)
+
+    ' F1変更時：シート名が工事番号の場合は変更不可
+    If Not Intersect(Target, Me.Range("F1")) Is Nothing Then
+        If Me.Name <> "原図" Then
+            Application.EnableEvents = False
+            Me.Range("F1").Value = Target.Value  ' 変更を元に戻す処理は不要
+            Application.EnableEvents = True
+            MsgBox "出張所名の変更は【原図】シートで行ってください。", vbExclamation
+            Application.Undo  ' 変更を元に戻す
+            Exit Sub
+        End If
+    End If
+
     Dim branchName As String
     Dim officeListCol As Collection
     Dim officeList As String
@@ -128,8 +141,8 @@ Private Function BuildOfficeListFromExternalMaster(ByVal branchName As String) A
     Dim officeVal As String
     
     Do While Not rs.EOF
-branchVal = Trim(CStr(IIf(IsNull(rs.Fields(1).Value), "", rs.Fields(1).Value)))  ' B列：支店名
-officeVal = Trim(CStr(IIf(IsNull(rs.Fields(2).Value), "", rs.Fields(2).Value)))  ' C列：出張所名
+branchVal = Trim(CStr(IIf(IsNull(rs.fields(1).Value), "", rs.fields(1).Value)))  ' B列：支店名
+officeVal = Trim(CStr(IIf(IsNull(rs.fields(2).Value), "", rs.fields(2).Value)))  ' C列：出張所名
         
         ' 支店名の一致チェック（完全一致 / 「支店」付き / 前方一致）
         If branchVal = targetBranch Or _
@@ -265,8 +278,8 @@ Private Sub SetD2RoomCombinations(ByVal officeName As String)
     Do While Not rs.EOF
         Dim cOffice As String
         Dim cRoom As String
-        cOffice = Trim(CStr(IIf(IsNull(rs.Fields(2).Value), "", rs.Fields(2).Value))) ' C列：出張所名
-        cRoom = Trim(CStr(IIf(IsNull(rs.Fields(5).Value), "", rs.Fields(5).Value)))   ' F列：管理室名
+        cOffice = Trim(CStr(IIf(IsNull(rs.fields(2).Value), "", rs.fields(2).Value))) ' C列：出張所名
+        cRoom = Trim(CStr(IIf(IsNull(rs.fields(5).Value), "", rs.fields(5).Value)))   ' F列：管理室名
 
         If cOffice <> "" Then currentOffice = cOffice
 

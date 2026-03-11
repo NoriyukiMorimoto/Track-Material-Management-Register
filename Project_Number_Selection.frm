@@ -133,10 +133,10 @@ Private Sub LoadMasterDataToMemory()
                 rs.MoveFirst
                 i = 1
                 Do While Not rs.EOF
-                    tempArr(i, 1) = Trim(CStr(IIf(IsNull(rs.Fields(colG).Value), "", rs.Fields(colG).Value)))  ' G—ñ
-                    tempArr(i, 2) = Trim(CStr(IIf(IsNull(rs.Fields(colJ).Value), "", rs.Fields(colJ).Value)))  ' J—ñ
-                    tempArr(i, 3) = Trim(CStr(IIf(IsNull(rs.Fields(colAC).Value), "", rs.Fields(colAC).Value))) ' AC—ñ
-                    tempArr(i, 4) = Trim(CStr(IIf(IsNull(rs.Fields(colAD).Value), "", rs.Fields(colAD).Value))) ' AD—ñ
+                    tempArr(i, 1) = Trim(CStr(IIf(IsNull(rs.fields(colG).Value), "", rs.fields(colG).Value)))  ' G—ñ
+                    tempArr(i, 2) = Trim(CStr(IIf(IsNull(rs.fields(colJ).Value), "", rs.fields(colJ).Value)))  ' J—ñ
+                    tempArr(i, 3) = Trim(CStr(IIf(IsNull(rs.fields(colAC).Value), "", rs.fields(colAC).Value))) ' AC—ñ
+                    tempArr(i, 4) = Trim(CStr(IIf(IsNull(rs.fields(colAD).Value), "", rs.fields(colAD).Value))) ' AD—ñ
                     i = i + 1
                     rs.MoveNext
                 Loop
