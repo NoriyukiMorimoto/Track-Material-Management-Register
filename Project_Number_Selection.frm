@@ -16,9 +16,11 @@ Attribute VB_Exposed = False
 Option Explicit
 Private Sub UserForm_Initialize()
     ' 1. まずタイトルを確定させる
-    Dim ws As Worksheet: Set ws = ActiveSheet
+    Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("原図")
     Dim targetBranch As String: targetBranch = Trim(CStr(ws.Range("D1").Value))
-    Dim targetOffice As String: targetOffice = Trim(CStr(ws.Range("F1").Value))
+    ' 末尾に「支店」が付いている場合は除去（ファイル名・タイトル生成で重複しないよう）
+    If Right(targetBranch, 2) = "支店" Then targetBranch = Left(targetBranch, Len(targetBranch) - 2)
+    Dim targetOffice As String: targetOffice = Trim(CStr(ws.Range("E1").Value))
     
     If targetOffice <> "" Then
         Me.Caption = targetBranch & "支店 " & targetOffice & " 工事選択"
@@ -36,6 +38,12 @@ Private Sub UserForm_Initialize()
         RefreshList ""
     End If
     
+End Sub
+
+'===========================================================
+' フォーム表示完了後にTextBox1にフォーカス
+'===========================================================
+Private Sub UserForm_Activate()
     Me.TextBox1.SetFocus
 End Sub
 
@@ -61,11 +69,13 @@ End Sub
 ' データ読み込み
 '===========================================================
 Private Sub LoadMasterDataToMemory()
-    Dim ws As Worksheet: Set ws = ActiveSheet
+    Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("原図")
     Dim folderPath As String: folderPath = "\\dt-ims\公開フォルダ\055_現場サポート室\★請求書一覧・材料管理格納\★各支店工事番号データ\"
     Dim targetYear As Long: targetYear = Year(Now)
     Dim targetBranch As String: targetBranch = Trim(CStr(ws.Range("D1").Value))
-    Dim targetOffice As String: targetOffice = Trim(CStr(ws.Range("F1").Value))
+    ' 末尾に「支店」が付いている場合は除去（ファイル名生成で重複しないよう）
+    If Right(targetBranch, 2) = "支店" Then targetBranch = Left(targetBranch, Len(targetBranch) - 2)
+    Dim targetOffice As String: targetOffice = Trim(CStr(ws.Range("E1").Value))
     Dim years As Variant: years = Array(CStr(targetYear), CStr(targetYear - 1))
     Dim y As Integer, i As Long, fileName As String
     Dim tempCol As New Collection
@@ -179,6 +189,7 @@ ErrHandler:
     If Not cn Is Nothing Then If cn.State = 1 Then cn.Close
     Set rs = Nothing
     Set cn = Nothing
+    Unload Me
 End Sub
 
 '===========================================================
@@ -301,3 +312,5 @@ Private Sub SetSelectedValue()
     Application.EnableEvents = True
     Application.ScreenUpdating = True
 End Sub
+
+

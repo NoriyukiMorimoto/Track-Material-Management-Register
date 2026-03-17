@@ -40,7 +40,7 @@ Public Sub InitRooms(ByRef rooms() As String, ByVal cnt As Long)
     Dim frameHeight As Single
     frameHeight = cnt * itemHeight + 20
     Me.Frame1.Height = frameHeight
-    Me.Frame1.Width = 310
+    Me.Frame1.width = 310
     
     ' --- ボタン4つの位置をFrame1下端＋10に設定 ---
     Dim btnTop As Single
@@ -49,25 +49,25 @@ Public Sub InitRooms(ByRef rooms() As String, ByVal cnt As Long)
     With Me.cmdSelectAll
         .Top = btnTop
         .Left = 20
-        .Width = 50
+        .width = 50
         .Height = 30
     End With
     With Me.cmdClearAll
         .Top = btnTop
         .Left = 90
-        .Width = 50
+        .width = 50
         .Height = 30
     End With
     With Me.cmdOK
         .Top = btnTop
         .Left = 160
-        .Width = 50
+        .width = 50
         .Height = 30
     End With
     With Me.cmdCancel
         .Top = btnTop
         .Left = 230
-        .Width = 70
+        .width = 70
         .Height = 30
     End With
     
@@ -96,7 +96,7 @@ Public Sub InitRooms(ByRef rooms() As String, ByVal cnt As Long)
             .Caption = rooms(i)
             .Left = 10
             .Top = topPos + i * itemHeight
-            .Width = 270
+            .width = 270
             .Height = 20
             .Tag = CStr(i)
             .Value = False

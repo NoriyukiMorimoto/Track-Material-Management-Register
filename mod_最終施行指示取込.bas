@@ -100,37 +100,37 @@ Public Sub ç≈èIé{çséwé¶éÊçû()
                 
                 For k = startRowDest To lastRowDest
                     If keyData = wsDest.Cells(k, 1).Value And _
-                       keyData2 = wsDest.Cells(k, 8).Value Then
+                       keyData2 = Cells(k, 7).Value Then
                        
-                        If wsDest.Cells(k, 17).Value = "" Or _
-                           (wsDest.Cells(k, 17).Value > "" And _
-                           (wsDest.Cells(k, 17).Value <> wsDest.Cells(k, 11).Value And _
-                            wsDest.Cells(k, 17).Value <> wsDest.Cells(k, 13).Value)) Then
+                        If Cells(k, 16).Value = "" Or _
+                           (Cells(k, 16).Value > "" And _
+                           (Cells(k, 16).Value <> Cells(k, 10).Value And _
+                            Cells(k, 16).Value <> Cells(k, 12).Value)) Then
                             
                             'íçï∂êîó  óDêÊ
-                            If wsDest.Cells(k, 11).Value <> "" Then
-                                If wkSekouCnt <= (Val(wsDest.Cells(k, 11).Value) - Val(wsDest.Cells(k, 17).Value)) Then
-                                    wsDest.Cells(k, 17).Value = Val(wsDest.Cells(k, 17).Value) + wkSekouCnt
+                            If Cells(k, 10).Value <> "" Then
+                                If wkSekouCnt <= (Val(Cells(k, 10).Value) - Val(Cells(k, 16).Value)) Then
+                                    Cells(k, 16).Value = Val(Cells(k, 16).Value) + wkSekouCnt
                                     wkSekouCnt = 0
                                     outputCount = outputCount + 1
                                     insertFlag = False
                                     Exit For
                                 Else
-                                    wkSekouCnt = wkSekouCnt - Val(wsDest.Cells(k, 11).Value) + Val(wsDest.Cells(k, 17).Value)
-                                    wsDest.Cells(k, 17).Value = wsDest.Cells(k, 11).Value
+                                    wkSekouCnt = wkSekouCnt - Val(Cells(k, 10).Value) + Val(Cells(k, 16).Value)
+                                    Cells(k, 16).Value = Cells(k, 10).Value
                                     outputCount = outputCount + 1
                                 End If
-                            ElseIf wsDest.Cells(k, 13).Value <> "" Then
+                            ElseIf Cells(k, 12).Value <> "" Then
                                 'î[ïiêîó  éüóDêÊ
-                                If wkSekouCnt <= (Val(wsDest.Cells(k, 13).Value) - Val(wsDest.Cells(k, 17).Value)) Then
-                                    wsDest.Cells(k, 17).Value = Val(wsDest.Cells(k, 17).Value) + wkSekouCnt
+                                If wkSekouCnt <= (Val(Cells(k, 12).Value) - Val(Cells(k, 16).Value)) Then
+                                    Cells(k, 16).Value = Val(Cells(k, 16).Value) + wkSekouCnt
                                     wkSekouCnt = 0
                                     outputCount = outputCount + 1
                                     insertFlag = False
                                     Exit For
                                 Else
-                                    wkSekouCnt = wkSekouCnt - Val(wsDest.Cells(k, 13).Value) + Val(wsDest.Cells(k, 17).Value)
-                                    wsDest.Cells(k, 17).Value = wsDest.Cells(k, 13).Value
+                                    wkSekouCnt = wkSekouCnt - Val(Cells(k, 12).Value) + Val(Cells(k, 16).Value)
+                                    Cells(k, 16).Value = Cells(k, 12).Value
                                     outputCount = outputCount + 1
                                 End If
                             End If
@@ -144,11 +144,11 @@ Public Sub ç≈èIé{çséwé¶éÊçû()
                     lastRowDest = destRow
                     wsDest.Cells(destRow, 1).Value = wsSource.Cells(i, 1).Value
                     wsDest.Cells(destRow, 3).Value = ""
-                    wsDest.Cells(destRow, 8).Value = wsSource.Cells(i, keyColSource3).Value
-                    wsDest.Cells(destRow, 17).Value = wkSekouCnt
-                    wsDest.Cells(destRow, 10).Value = wsSource.Cells(i, 48).Value
-                    wsDest.Cells(destRow, 11).Value = ""
-                    wsDest.Cells(destRow, 13).Value = ""
+                    Cells(destRow, 7).Value = wsSource.Cells(i, keyColSource3).Value
+                    Cells(destRow, 16).Value = wkSekouCnt
+                    Cells(destRow, 9).Value = wsSource.Cells(i, 48).Value
+                    Cells(destRow, 10).Value = ""
+                    Cells(destRow, 12).Value = ""
                     outputCount2 = outputCount2 + 1
                 End If
             End If
@@ -174,3 +174,5 @@ Cleanup:
     If Not srcWorkbook Is Nothing Then srcWorkbook.Close False
     Set srcWorkbook = Nothing
 End Sub
+
+

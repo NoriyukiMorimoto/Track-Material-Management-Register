@@ -13,6 +13,7 @@ Private oldD1 As Variant
 Private oldF1 As Variant
 Private oldD3 As Variant
 Private cancelClear As Boolean
+Private isF1Processing As Boolean  ' RunF1Process二重起動防止フラグ
 Private Sub Worksheet_Change(ByVal Target As Range)
     Dim branchName As String
     Dim officeListCol As Collection
@@ -25,9 +26,24 @@ Private Sub Worksheet_Change(ByVal Target As Range)
     Application.EnableEvents = False
 
     '--------------------------------------
-    ' D1（支店名）または F1（出張所名）変更時
+    ' D1（支店名）変更時：クリア確認なしで出張所リストを表示
     '--------------------------------------
-    If Not Application.Intersect(Target, Me.Range("D1,F1")) Is Nothing Then
+    If Not Application.Intersect(Target, Me.Range("D1")) Is Nothing Then
+        branchName = Trim$(CStr(Me.Range("D1").Value))
+        If branchName <> "" Then
+            Set officeListCol = BuildOfficeListFromExternalMaster(branchName)
+            UpdateE1Validation JoinCollection(officeListCol, ",")
+            ShowBranchOfficeCombo officeListCol
+        Else
+            Me.Range("E1").Validation.Delete
+            HideOfficeCombo
+        End If
+    End If
+
+    '--------------------------------------
+    ' E1（出張所名）変更時：クリア確認→クリア→単価取込
+    '--------------------------------------
+    If Not Application.Intersect(Target, Me.Range("E1")) Is Nothing Then
         resp = MsgBox("読込済データがクリアされますがよろしいですか？", _
                       vbExclamation + vbYesNo + vbDefaultButton2, "クリアの確認")
 
@@ -37,18 +53,22 @@ Private Sub Worksheet_Change(ByVal Target As Range)
         End If
 
         ' データクリア実行
-        mod_NewProcess.ClearTargetData Me
-        
-        ' D1が変更された場合のみ、出張所リストを更新
-        If Not Intersect(Target, Me.Range("D1")) Is Nothing Then
-            branchName = Trim$(CStr(Me.Range("D1").Value))
-            If branchName <> "" Then
-                Set officeListCol = BuildOfficeListFromExternalMaster(branchName)
-                UpdateF1Validation JoinCollection(officeListCol, ",")
-                ShowBranchOfficeCombo officeListCol
-            Else
-                Me.Range("F1").Validation.Delete
-                HideOfficeCombo
+        mod_Newprocess.ClearTargetData Me
+
+        ' 単価取込処理を実行（二重起動防止）
+        If Not isF1Processing Then
+            isF1Processing = True
+            mod_Newprocess.RunF1Process Me
+            ' 完了後にEnableEvents復元→Activate→メッセージ表示→再計算
+            Application.EnableEvents = True
+            Me.Activate
+            Dim completeMsg As String
+            completeMsg = mod_Newprocess.BuildCompleteMessage(Me.Parent)
+            isF1Processing = False
+            Application.Calculation = xlCalculationAutomatic
+            Application.Calculate
+            If completeMsg <> "" Then
+                MsgBox completeMsg, vbInformation, "完了"
             End If
         End If
     End If
@@ -60,7 +80,7 @@ Private Sub Worksheet_Change(ByVal Target As Range)
             resp = MsgBox("選択された工事のデータ処理を実行しますか？", _
                           vbYesNo + vbQuestion, "実行確認")
             If resp = vbYes Then
-                mod_NewProcess.RunDataProcessForD3 Me
+                mod_Newprocess.RunDataProcessForD3 Me
             Else
                 Me.Range("D3").Value = oldD3
             End If
@@ -75,7 +95,7 @@ End Sub
 '-----------------------------------------------------------
 Private Sub Worksheet_SelectionChange(ByVal Target As Range)
     oldD1 = Me.Range("D1").Value
-    oldF1 = Me.Range("F1").Value
+    oldF1 = Me.Range("E1").Value
     oldD3 = Me.Range("D3").Value
 End Sub
 '===========================================================
@@ -88,9 +108,11 @@ Private Function BuildOfficeListFromExternalMaster(ByVal branchName As String) A
     Dim masterPath As String
     
     targetBranch = Trim(branchName)
+    ' 末尾に「支店」が付いている場合は除去（マスタのB列と形式を合わせるため）
+    If Right(targetBranch, 2) = "支店" Then targetBranch = Left(targetBranch, Len(targetBranch) - 2)
     If targetBranch = "" Then Exit Function
     
-    masterPath = mod_NewProcess.MASTER_FILE_PATH
+    masterPath = mod_Newprocess.MASTER_FILE_PATH
     If masterPath = "" Or Dir(masterPath) = "" Then
         MsgBox "マスタファイルのパスが不正です。" & vbCrLf & masterPath, vbCritical
         Set BuildOfficeListFromExternalMaster = col
@@ -166,9 +188,9 @@ End Function
 
 ' --- 補助関数 (既存コードのセル位置修正版) ---
 
-Private Sub UpdateF1Validation(ByVal officeList As String)
+Private Sub UpdateE1Validation(ByVal officeList As String)
     On Error Resume Next
-    With Me.Range("F1").Validation
+    With Me.Range("E1").Validation
         .Delete
         If officeList <> "" And Len(officeList) <= 255 Then
             .Add Type:=xlValidateList, Formula1:=officeList
@@ -182,11 +204,13 @@ Private Sub ShowBranchOfficeCombo(ByVal officeListCol As Collection)
     ole.Object.Clear
     For i = 1 To officeListCol.Count: ole.Object.AddItem officeListCol(i): Next i
     With ole
-        .Left = Me.Range("F1").Left
-        .Top = Me.Range("F1").Top
-        .Width = Me.Range("F1").Width
+        .Left = Me.Range("E1").Left
+        .Top = Me.Range("E1").Top
+        .width = Me.Range("E1").width
         .Visible = True
     End With
+    ' ドロップダウンを自動で開く
+    ole.Object.DropDown
 End Sub
 
 Private Sub HideOfficeCombo()
@@ -216,11 +240,36 @@ Private Sub ComboBox1_Change()
     newVal = Trim$(CStr(Me.OLEObjects("ComboBox1").Object.Value))
     If newVal = "" Then GoTo ExitHandler
 
-    ' F1セルに値を書き込む
-    Me.Range("F1").Value = newVal
-    
     ' コンボボックスを隠す
     HideOfficeCombo
+
+    ' クリア確認
+    resp = MsgBox("読込済データがクリアされますがよろしいですか？", _
+                  vbExclamation + vbYesNo + vbDefaultButton2, "クリアの確認")
+    If resp = vbNo Then GoTo ExitHandler
+
+    ' E1セルに値を書き込む（EnableEvents=Falseのまま書き込みでWorksheet_Changeを発火させない）
+    Me.Range("E1").Value = newVal
+
+    ' データクリア実行
+    mod_Newprocess.ClearTargetData Me
+
+    ' 単価取込処理を実行（二重起動防止）
+    If Not isF1Processing Then
+        isF1Processing = True
+        mod_Newprocess.RunF1Process Me
+        Application.EnableEvents = True
+        Me.Activate
+        Dim completeMsg As String
+        completeMsg = mod_Newprocess.BuildCompleteMessage(Me.Parent)
+        isF1Processing = False
+        Application.Calculation = xlCalculationAutomatic
+        Application.Calculate
+        If completeMsg <> "" Then
+            MsgBox completeMsg, vbInformation, "完了"
+        End If
+        Exit Sub
+    End If
 
 ExitHandler:
     Application.EnableEvents = True
@@ -230,7 +279,7 @@ End Sub
 '===========================================================
 Private Sub SetD2RoomCombinations(ByVal officeName As String)
     Dim masterPath As String
-    masterPath = mod_NewProcess.MASTER_FILE_PATH
+    masterPath = mod_Newprocess.MASTER_FILE_PATH
     If masterPath = "" Or Dir(masterPath) = "" Then
         MsgBox "マスタファイルのパスが不正です。", vbCritical
         Exit Sub
@@ -308,12 +357,12 @@ Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean
     ' D2ダブルクリック：管理室選択フォームを表示
     If Not Intersect(Target, Me.Range("D2")) Is Nothing Then
         Cancel = True
-        If Me.Range("F1").Value = "" Then
+        If Me.Range("E1").Value = "" Then
             MsgBox "先に出張所名（F1）を選択してください。", vbExclamation
             Exit Sub
         End If
         Dim officeNameF1 As String
-        officeNameF1 = Trim(CStr(Me.Range("F1").Value))
+        officeNameF1 = Trim(CStr(Me.Range("E1").Value))
         Call SetD2RoomCombinations(officeNameF1)
     End If
 
@@ -328,3 +377,5 @@ Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean
     End If
 
 End Sub
+
+

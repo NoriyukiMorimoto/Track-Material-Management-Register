@@ -32,7 +32,7 @@ Public Sub 支払シート取込()
 
     Set wsDest = ActiveSheet
     projectNo = Trim(wsDest.Range("D3").Value)
-    officeName = Trim(wsDest.Range("F1").Value)
+    officeName = Trim(wsDest.Range("E1").Value)
 
     If projectNo = "" Then
         MsgBox "D3に工事番号を入力してください。", vbCritical
@@ -154,7 +154,7 @@ Private Sub ProcessTransfer(ByVal srcWb As Workbook, _
     skipCount = 0
 
     ' --- Step1: 対象行を収集（Collectionを使用）---
-    ' 各要素構成：0=日付シリアル, 1=品目コード数値, 2=G, 3=Sクリーン, 4=H, 5=I, 6=AA, 7=J, 8=L
+    ' 各要素構成：0=日付シリアル, 1=品目コード数値, 2=G, 3=Sクリーン, 4=H, 5=I, 6=AA, 7=J, 8=L, 9=AB, 10=W
     Dim dataCol As New Collection
     Dim SEP As String: SEP = Chr(9)
 
@@ -198,7 +198,8 @@ rec = Format(dateVal, "000000000000.00") & SEP & _
       CStr(srcData(r, 27)) & SEP & _
       CStr(srcData(r, 10)) & SEP & _
       CStr(srcData(r, 12)) & SEP & _
-      CStr(srcData(r, 28))
+      CStr(srcData(r, 28)) & SEP & _
+      CStr(srcData(r, 23))
                 dataCol.Add rec
             End If
         Next r
@@ -229,7 +230,7 @@ NextSheet:
 
     ' --- Step3: 既存データをDictionaryに格納---
     Dim destLastRow As Long
-    destLastRow = wsDest.Cells(wsDest.Rows.Count, "A").End(xlUp).Row
+    destLastRow = wsDest.Cells(wsDest.Rows.Count, "C").End(xlUp).Row
     If destLastRow < DEST_START_ROW Then destLastRow = DEST_START_ROW - 1
 
     Dim dict As Object
@@ -238,7 +239,7 @@ NextSheet:
     If destLastRow >= DEST_START_ROW Then
         Dim destData As Variant
         destData = wsDest.Range(wsDest.Cells(DEST_START_ROW, 1), _
-                                wsDest.Cells(destLastRow, 11)).Value
+                                wsDest.Cells(destLastRow, 27)).Value
         Dim d As Long
         Dim existKey As String
         Dim cDateStr As String
@@ -253,8 +254,8 @@ NextSheet:
             existKey = MakeKey( _
                 CStr(destData(d, 1)), _
                 cDateStr, _
-                CStr(destData(d, 4)), _
-                CStr(destData(d, 11)))
+                CStr(destData(d, 12)), _
+                CStr(destData(d, 27)))
             If existKey <> "|||" Then dict(existKey) = True
         Next d
         
@@ -263,7 +264,7 @@ NextSheet:
 
     ' --- Step4: 重複チェックして書込配列に積む---
     Dim writeData() As Variant
-    ReDim writeData(1 To n, 1 To 7)
+    ReDim writeData(1 To n, 1 To 8)
     Dim writeCount As Long
     writeCount = 0
     Dim fields() As String
@@ -274,10 +275,10 @@ NextSheet:
 Dim dv As Double        ' ← ループの外に移動
     For idx = 1 To n
         fields = Split(dataArr(idx), SEP)
-        newKey = MakeKey5(fields(2), Format(CDate(fields(3)), "yyyy/m/d"), fields(4), fields(8), fields(9))
+        newKey = MakeKey(fields(2), Format(CDate(fields(3)), "yyyy/m/d"), fields(10), fields(9))
         If dict.Exists(newKey) Then
             skipCount = skipCount + 1
-            Debug.Print "重複スキップ: " & fields(2) & " | " & fields(3) & " | " & fields(4) & " | " & fields(8)
+            Debug.Print "重複スキップ: " & fields(2) & " | " & fields(3) & " | " & fields(4) & " | " & fields(10)
         Else
             writeCount = writeCount + 1
             writeData(writeCount, 1) = fields(2)
@@ -287,6 +288,7 @@ Dim dv As Double        ' ← ループの外に移動
             writeData(writeCount, 5) = fields(6)
             writeData(writeCount, 6) = fields(7)
             writeData(writeCount, 7) = fields(8)
+            writeData(writeCount, 8) = fields(9)  ' AB列
             dict(newKey) = True
             addCount = addCount + 1
             dv = CDbl(Val(fields(0)))
@@ -299,16 +301,17 @@ Dim dv As Double        ' ← ループの外に移動
 
     ' --- Step5: 列ごとに一括書込---
     Dim startRow As Long
-    startRow = destLastRow + 1
+    ' C列の最終行の次行、ただし最小値は7行目
+    startRow = Application.Max(DEST_START_ROW, destLastRow + 1)
     Dim colA() As Variant, colC() As Variant, colD() As Variant
     Dim colF() As Variant, colH() As Variant, colJ() As Variant, colK() As Variant
+    Dim colZ() As Variant
     ReDim colA(1 To writeCount, 1 To 1)
     ReDim colC(1 To writeCount, 1 To 1)
-    ReDim colD(1 To writeCount, 1 To 1)
-    ReDim colF(1 To writeCount, 1 To 1)
     ReDim colH(1 To writeCount, 1 To 1)
     ReDim colJ(1 To writeCount, 1 To 1)
     ReDim colK(1 To writeCount, 1 To 1)
+    ReDim colZ(1 To writeCount, 1 To 1)
 
     Dim w As Long
     For w = 1 To writeCount
@@ -317,24 +320,119 @@ Dim dv As Double        ' ← ループの外に移動
         colC(w, 1) = CDate(writeData(w, 2))
         If Err.Number <> 0 Then colC(w, 1) = writeData(w, 2): Err.Clear
         On Error GoTo 0
-        colD(w, 1) = writeData(w, 3)
-        colF(w, 1) = writeData(w, 4)
         colH(w, 1) = writeData(w, 5)
         colJ(w, 1) = writeData(w, 6)
         colK(w, 1) = writeData(w, 7)
+        colZ(w, 1) = writeData(w, 8)  ' AB列→Z列
     Next w
     Erase writeData
 
+    ' 行を挿入（最終データ行の下にwriteCount行分）
+    wsDest.Rows(startRow & ":" & startRow + writeCount - 1).Insert Shift:=xlDown
+
+    ' 値を書き込み
     wsDest.Range(wsDest.Cells(startRow, "A"), wsDest.Cells(startRow + writeCount - 1, "A")).Value = colA
     With wsDest.Range(wsDest.Cells(startRow, "C"), wsDest.Cells(startRow + writeCount - 1, "C"))
         .Value = colC
         .NumberFormat = "yyyy/m/d"
     End With
-    wsDest.Range(wsDest.Cells(startRow, "D"), wsDest.Cells(startRow + writeCount - 1, "D")).Value = colD
-    wsDest.Range(wsDest.Cells(startRow, "F"), wsDest.Cells(startRow + writeCount - 1, "F")).Value = colF
-    wsDest.Range(wsDest.Cells(startRow, "H"), wsDest.Cells(startRow + writeCount - 1, "H")).Value = colH
-    wsDest.Range(wsDest.Cells(startRow, "J"), wsDest.Cells(startRow + writeCount - 1, "J")).Value = colJ
-    wsDest.Range(wsDest.Cells(startRow, "K"), wsDest.Cells(startRow + writeCount - 1, "K")).Value = colK
+    wsDest.Range(wsDest.Cells(startRow, "G"), wsDest.Cells(startRow + writeCount - 1, "G")).Value = colH
+    wsDest.Range(wsDest.Cells(startRow, "I"), wsDest.Cells(startRow + writeCount - 1, "I")).Value = colJ
+    wsDest.Range(wsDest.Cells(startRow, "L"), wsDest.Cells(startRow + writeCount - 1, "L")).Value = colK
+    wsDest.Range(wsDest.Cells(startRow, "AA"), wsDest.Cells(startRow + writeCount - 1, "AA")).Value = colZ
+
+    ' --- 計算式・書式設定（一括処理でメモリ効率化）---
+    Dim endRow As Long
+    endRow = startRow + writeCount - 1
+    Dim rng As Range
+
+    ' 計算式を先頭行に入力してAutoFillで複写
+    wsDest.Cells(startRow, "K").Formula = "=SUM(J" & startRow & "*I" & startRow & ")"
+    wsDest.Cells(startRow, "D").Formula = "=IF(A" & startRow & "=0,"""",VLOOKUP($A" & startRow & ",単価!$A:$J,3,FALSE))"
+    wsDest.Cells(startRow, "E").Formula = "=IF(A" & startRow & "=0,"""",VLOOKUP($A" & startRow & ",単価!$A:$J,4,FALSE))"
+    wsDest.Cells(startRow, "F").Formula = "=IF(A" & startRow & "=0,"""",VLOOKUP($A" & startRow & ",単価!$A:$J,5,FALSE))"
+    wsDest.Cells(startRow, "H").Formula = "=IF(A" & startRow & "=0,"""",VLOOKUP($A" & startRow & ",単価!$A:$J,6,FALSE))"
+    wsDest.Cells(startRow, "M").Formula = "=IF($A" & startRow & "=0,"""",ROUNDDOWN(L" & startRow & "*$I" & startRow & ",0))"
+    wsDest.Cells(startRow, "Q").Formula = "=IF($A" & startRow & "=0,"""",ROUNDDOWN(P" & startRow & "*$I" & startRow & ",0))"
+    wsDest.Cells(startRow, "R").Formula = "=(J" & startRow & "+L" & startRow & ")-P" & startRow & ""
+    wsDest.Cells(startRow, "S").Formula = "=IF($A" & startRow & "=0,"""",ROUNDDOWN(R" & startRow & "*$I" & startRow & ",0))"
+    wsDest.Cells(startRow, "T").Formula = "=IF(A" & startRow & "="""","""",A" & startRow & ")"
+    wsDest.Cells(startRow, "U").Formula = "=IF(A" & startRow & "="""","""",D" & startRow & ")"
+    wsDest.Cells(startRow, "V").Formula = "=IF(A" & startRow & "="""","""",E" & startRow & ")"
+    wsDest.Cells(startRow, "W").Formula = "=IF(A" & startRow & "="""","""",F" & startRow & ")"
+    wsDest.Cells(startRow, "X").Formula = "=IF(A" & startRow & "="""","""",G" & startRow & ")"
+    wsDest.Cells(startRow, "Y").Formula = "=IF(A" & startRow & "="""","""",I" & startRow & ")"
+    wsDest.Cells(startRow, "Z").Formula = "=IF(A" & startRow & "="""","""",J" & startRow & ")"
+
+    ' AutoFillで全行に複写（writeCount=1の場合はスキップ）
+    If writeCount > 1 Then
+        Dim fillCols As Variant
+        fillCols = Array("K", "D", "E", "F", "H", "M", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
+        Dim fc As Variant
+        For Each fc In fillCols
+            wsDest.Range(wsDest.Cells(startRow, CStr(fc)), wsDest.Cells(endRow, CStr(fc))).FillDown
+        Next fc
+    End If
+
+    ' 書式設定（範囲一括）
+    With wsDest.Range(wsDest.Cells(startRow, "A"), wsDest.Cells(endRow, "AA"))
+        .Font.Size = 11
+    End With
+    wsDest.Range(wsDest.Cells(startRow, "A"), wsDest.Cells(endRow, "AA")).RowHeight = 15#
+
+    ' C列・G列：文字方向0度
+    wsDest.Range(wsDest.Cells(startRow, "C"), wsDest.Cells(endRow, "C")).Orientation = 0
+    wsDest.Range(wsDest.Cells(startRow, "G"), wsDest.Cells(endRow, "G")).Orientation = 0
+    wsDest.Range(wsDest.Cells(startRow, "G"), wsDest.Cells(endRow, "G")).ShrinkToFit = True
+
+    ' H?S列：数値形式・右詰め
+    With wsDest.Range(wsDest.Cells(startRow, "H"), wsDest.Cells(endRow, "S"))
+        .NumberFormat = "#,##0"
+        .HorizontalAlignment = xlRight
+    End With
+    wsDest.Range(wsDest.Cells(startRow, "R"), wsDest.Cells(endRow, "R")).NumberFormat = "0"
+
+    ' D列・E列：左詰め
+    wsDest.Range(wsDest.Cells(startRow, "D"), wsDest.Cells(endRow, "D")).HorizontalAlignment = xlLeft
+    wsDest.Range(wsDest.Cells(startRow, "E"), wsDest.Cells(endRow, "E")).HorizontalAlignment = xlLeft
+
+    ' 下罫線（A?AA列）
+    With wsDest.Range(wsDest.Cells(startRow, "A"), wsDest.Cells(endRow, "AA")).Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .Weight = xlHairline
+    End With
+    ' 各行の下罫線（xlInsideHorizontal）
+    If writeCount > 1 Then
+        With wsDest.Range(wsDest.Cells(startRow, "A"), wsDest.Cells(endRow, "AA")).Borders(xlInsideHorizontal)
+            .LineStyle = xlContinuous
+            .Weight = xlHairline
+        End With
+    End If
+
+    ' J列左罫線：二重線（全行一括）
+    With wsDest.Range(wsDest.Cells(startRow, "J"), wsDest.Cells(endRow, "J")).Borders(xlEdgeLeft)
+        .LineStyle = xlDouble
+    End With
+
+    ' --- 「合計」行のSUM式更新 ---
+    Dim sumRow As Long
+    Dim sumLastRow As Long
+    sumLastRow = wsDest.Cells(wsDest.Rows.Count, "A").End(xlUp).Row
+    Dim sumCols As Variant
+    sumCols = Array("K", "M", "Q", "S")
+    Dim sc As Variant
+    For sumRow = 7 To sumLastRow
+        If CStr(wsDest.Cells(sumRow, "A").Value) = "合計" Then
+            For Each sc In sumCols
+                wsDest.Cells(sumRow, CStr(sc)).Formula = _
+                    "=SUM(" & sc & "7:" & sc & (sumRow - 1) & ")"
+            Next sc
+        End If
+    Next sumRow
+
+    Dim gotoRow As Long
+    gotoRow = Application.Max(startRow, startRow + writeCount - 1 - 10)
+    Application.GoTo wsDest.Cells(gotoRow, "C"), True
 
     ' J3に今回追記分の最新日付を設定
     If maxDateVal > 0 Then
@@ -379,4 +477,6 @@ Private Function MakeKey5(a As String, c As String, d As String, _
                            k As String, ab As String) As String
     MakeKey5 = a & "|" & c & "|" & d & "|" & k & "|" & ab
 End Function
+
+
 
