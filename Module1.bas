@@ -1,45 +1,45 @@
 Attribute VB_Name = "Module1"
 Option Explicit
 
-'c”—Ê‚ğ‘OŠúŒJ‰z‚Ö
+'æ®‹æ•°é‡ã‚’å‰æœŸç¹°è¶Šã¸
 '
-'¡Šú’•¶”—ÊA2/4‚Åg—p‚ğƒNƒŠƒA
+'ä»ŠæœŸæ³¨æ–‡æ•°é‡ã€2/4ã§ä½¿ç”¨ã‚’ã‚¯ãƒªã‚¢
 '2024/12/05 O.Kanai
-Sub ƒ{ƒ^ƒ“1_Click()
+Sub ãƒœã‚¿ãƒ³1_Click()
     Dim i As Long
     Dim iMax As Long
     Dim wkNum As Long
     
-    If MsgBox("c”—Ê‚ğ‘OŠúŒJ‰z‚Öİ’è‚µ‚Ü‚·‚©H", vbYesNo + vbQuestion, "Šm”F") = vbNo Then Exit Sub
+    If MsgBox("æ®‹æ•°é‡ã‚’å‰æœŸç¹°è¶Šã¸è¨­å®šã—ã¾ã™ã‹ï¼Ÿ", vbYesNo + vbQuestion, "ç¢ºèª") = vbNo Then Exit Sub
 
-    i = 7 '–¾×ŠJn‚Ìs
+    i = 7 'æ˜ç´°é–‹å§‹ã®è¡Œ
     Do
-        If i > 10000 Then Exit Do  'ü‚è‰ß‚¬‚È‚¢‚æ‚¤‚É
+        If i > 10000 Then Exit Do  'å‘¨ã‚Šéããªã„ã‚ˆã†ã«
         
-        '•i–ÚƒR[ƒh‚ª“ü—Í‚ ‚é•ª‚Ì‚İˆ—
+        'å“ç›®ã‚³ãƒ¼ãƒ‰ãŒå…¥åŠ›ã‚ã‚‹åˆ†ã®ã¿å‡¦ç†
         If Range("A" & i) = "" Then
             Exit Do
         Else
-            'c”—Ê‚ğæ“¾‚µA‘OŠúŒJ‰z‚Öİ’è
-            wkNum = Val(Range("S" & i).Value)  'c”—Ê(S—ñ)
-            Range("K" & i).Value = wkNum       '‘OŠúŒJ‰z(K—ñ)
+            'æ®‹æ•°é‡ã‚’å–å¾—ã—ã€å‰æœŸç¹°è¶Šã¸è¨­å®š
+            wkNum = Val(Range("S" & i).Value)  'æ®‹æ•°é‡(Såˆ—)
+            Range("K" & i).Value = wkNum       'å‰æœŸç¹°è¶Š(Kåˆ—)
             
-            '¡Šú’•¶”—ÊA2/4‚Åg—p‚ğƒNƒŠƒA
-            Range("M" & i).ClearContents       '¡Šú’•¶(M—ñ)
-            Range("Q" & i).ClearContents       '2/4‚Åg—p(Q—ñ)
+            'ä»ŠæœŸæ³¨æ–‡æ•°é‡ã€2/4ã§ä½¿ç”¨ã‚’ã‚¯ãƒªã‚¢
+            Range("M" & i).ClearContents       'ä»ŠæœŸæ³¨æ–‡(Måˆ—)
+            Range("Q" & i).ClearContents       '2/4ã§ä½¿ç”¨(Qåˆ—)
         End If
     
         i = i + 1
     Loop
 
-    iMax = i - 1 'Å‘å’l‚ğ•Û‘¶
+    iMax = i - 1 'æœ€å¤§å€¤ã‚’ä¿å­˜
     i = iMax
     Do
         If i < 7 Then
             Exit Do
         Else
-            'c”—Ê‚ª‚O‚Ìê‡‚És‚ğíœ
-            If Val(Range("S" & i).Value) = 0 Then 'c”—Ê(S—ñ)
+            'æ®‹æ•°é‡ãŒï¼ã®å ´åˆã«è¡Œã‚’å‰Šé™¤
+            If Val(Range("S" & i).Value) = 0 Then 'æ®‹æ•°é‡(Såˆ—)
                 Rows(i).Delete
             End If
         End If
@@ -47,25 +47,25 @@ Sub ƒ{ƒ^ƒ“1_Click()
     Loop
 End Sub
 
-'x•¥‹àŠzŒvZæ‚è‚İ
+'æ”¯æ‰•é‡‘é¡è¨ˆç®—å–ã‚Šè¾¼ã¿
 '
 '
 '2025/01/22 O.Kanai
-Sub ƒ{ƒ^ƒ“2_Click()
-    'x•¥‹àŠzŒvZæ‚è‚İ
-    '’P‚È‚é“ü—Íƒ`ƒFƒbƒN{ƒtƒH[ƒ€ŒÄ‚Ño‚µi–{ˆ—‚Í UserForm1 ‘¤j
+Sub ãƒœã‚¿ãƒ³2_Click()
+    'æ”¯æ‰•é‡‘é¡è¨ˆç®—å–ã‚Šè¾¼ã¿
+    'å˜ãªã‚‹å…¥åŠ›ãƒã‚§ãƒƒã‚¯ï¼‹ãƒ•ã‚©ãƒ¼ãƒ å‘¼ã³å‡ºã—ï¼ˆæœ¬å‡¦ç†ã¯ UserForm1 å´ï¼‰
     If Range("D3").Text = "" Then
-        MsgBox "H”ÔEŒ–¼‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢", vbCritical
+        MsgBox "å·¥ç•ªãƒ»ä»¶åã‚’å…¥åŠ›ã—ã¦ãã ã•ã„", vbCritical
         Exit Sub
     End If
     UserForm1.Show
 End Sub
 
-'ÅI{sw¦æ‚è‚İ
+'æœ€çµ‚æ–½è¡ŒæŒ‡ç¤ºå–ã‚Šè¾¼ã¿
 '
 '
 '2025/01/22 O.Kanai
-Sub ƒ{ƒ^ƒ“3_Click()
+Sub ãƒœã‚¿ãƒ³3_Click()
     Dim i As Long, k As Long
     Dim wkNum As Double
     Dim keyCellDest As String
@@ -87,87 +87,87 @@ Sub ƒ{ƒ^ƒ“3_Click()
     Dim keyColSource3 As Long
     Dim outputCount As Long
     Dim outputCount2 As Long
-    Dim keyData As String '•i–ÚƒR[ƒh
-    Dim keyData2 As String 'ŠÇ—º
+    Dim keyData As String 'å“ç›®ã‚³ãƒ¼ãƒ‰
+    Dim keyData2 As String 'ç®¡ç†å®¤
     Dim keyKanri As String
     Dim insertFlag As Boolean
     Dim wkSekouCnt As Double
 
     keyCellDest = "D2"
     
-    '“ü—Íƒ`ƒFƒbƒN
+    'å…¥åŠ›ãƒã‚§ãƒƒã‚¯
     If Range(keyCellDest).Text = "" Then
-        MsgBox "ŠÇ—º‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢", vbCritical
+        MsgBox "ç®¡ç†å®¤ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„", vbCritical
         Exit Sub
     End If
     
-    If MsgBox("ÅI{sw¦‚ğæ‚è‚İ‚µ‚Ü‚·‚©H", vbYesNo + vbQuestion, "Šm”F") = vbNo Then Exit Sub
+    If MsgBox("æœ€çµ‚æ–½è¡ŒæŒ‡ç¤ºã‚’å–ã‚Šè¾¼ã¿ã—ã¾ã™ã‹ï¼Ÿ", vbYesNo + vbQuestion, "ç¢ºèª") = vbNo Then Exit Sub
 
     On Error GoTo ErrHandler
     Application.ScreenUpdating = False
     
-    ' 1. ƒtƒ@ƒCƒ‹‘I‘ğ
+    ' 1. ãƒ•ã‚¡ã‚¤ãƒ«é¸æŠ
     filePath = Application.GetOpenFilename( _
         FileFilter:="Excel Files (*.xls; *.xlsx; *.xlsm), *.xls; *.xlsx; *.xlsm", _
-        Title:="ÅI{sw¦‚ğæ“¾‚·‚éExcelƒtƒ@ƒCƒ‹‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢")
+        Title:="æœ€çµ‚æ–½è¡ŒæŒ‡ç¤ºã‚’å–å¾—ã™ã‚‹Excelãƒ•ã‚¡ã‚¤ãƒ«ã‚’é¸æŠã—ã¦ãã ã•ã„")
     If filePath = "False" Then
-        MsgBox "‘€ì‚ªƒLƒƒƒ“ƒZƒ‹‚³‚ê‚Ü‚µ‚½B", vbExclamation
+        MsgBox "æ“ä½œãŒã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚Œã¾ã—ãŸã€‚", vbExclamation
         GoTo Cleanup
     End If
 
-    ' 2. ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+    ' 2. ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã
     Set srcWorkbook = Workbooks.Open(filePath, ReadOnly:=True)
     sheetName = srcWorkbook.ActiveSheet.Name
     
-    ' 3. Šeíİ’è
-    serchColSource = 1   'A—ñF®—”Ô†
-    serchColDest = 1     'A—ñF•i–ÚƒR[ƒh
-    keyColSource = 77    'BY—ñFHí•ª—Ş
-    keyColSource2 = 1    'A—ñF®—”Ô†
-    keyColSource3 = 69   'BQ—ñFŠÇ—º
+    ' 3. å„ç¨®è¨­å®š
+    serchColSource = 1   'Aåˆ—ï¼šæ•´ç†ç•ªå·
+    serchColDest = 1     'Aåˆ—ï¼šå“ç›®ã‚³ãƒ¼ãƒ‰
+    keyColSource = 77    'BYåˆ—ï¼šå·¥ç¨®åˆ†é¡
+    keyColSource2 = 1    'Aåˆ—ï¼šæ•´ç†ç•ªå·
+    keyColSource3 = 69   'BQåˆ—ï¼šç®¡ç†å®¤
     startRowSource = 26
     startRowDest = 7
     
     Set wsSource = srcWorkbook.Sheets(sheetName)
     Set wsDest = ThisWorkbook.ActiveSheet
     
-    ' ÅIsæ“¾ixlUp‚ÅˆÀ’è‰»j
+    ' æœ€çµ‚è¡Œå–å¾—ï¼ˆxlUpã§å®‰å®šåŒ–ï¼‰
     lastRowSource = wsSource.Cells(wsSource.Rows.Count, serchColSource).End(xlUp).Row
     lastRowDest = wsDest.Cells(wsDest.Rows.Count, serchColDest).End(xlUp).Row
     If lastRowDest < startRowDest Then lastRowDest = startRowDest - 1
     
-    conditionValue = "" '–¢g—p‚¾‚ªc‚·
+    conditionValue = "" 'æœªä½¿ç”¨ã ãŒæ®‹ã™
     destRow = lastRowDest
     If startRowSource >= lastRowSource Then GoTo NoData
 
-    outputCount = 0   'XVŒ”
-    outputCount2 = 0  '’Ç‰ÁŒ”
+    outputCount = 0   'æ›´æ–°ä»¶æ•°
+    outputCount2 = 0  'è¿½åŠ ä»¶æ•°
     
     keyKanri = wsDest.Range(keyCellDest).Value
     
-    ' ƒf[ƒ^æ“¾
+    ' ãƒ‡ãƒ¼ã‚¿å–å¾—
     For i = startRowSource To lastRowSource
         keyData = ""
         insertFlag = False
-        If wsSource.Cells(i, keyColSource).Value = "w“ü[“–" And _
-           InStr(keyKanri, wsSource.Cells(i, keyColSource3).Value) > 0 Then   'w“ü[“– & ŠÇ—ºˆê’v
+        If wsSource.Cells(i, keyColSource).Value = "è³¼å…¥å……å½“" And _
+           InStr(keyKanri, wsSource.Cells(i, keyColSource3).Value) > 0 Then   'è³¼å…¥å……å½“ & ç®¡ç†å®¤ä¸€è‡´
            
             insertFlag = True
             keyData = wsSource.Cells(i, keyColSource2).Value
             keyData2 = wsSource.Cells(i, keyColSource3).Value
             If keyData <> "" Then
-                wkSekouCnt = Val(wsSource.Cells(i, 43).Value)  ' {H”—Êi—ñ43j
+                wkSekouCnt = Val(wsSource.Cells(i, 43).Value)  ' æ–½å·¥æ•°é‡ï¼ˆåˆ—43ï¼‰
                 
-                For k = startRowDest To lastRowDest  ' Šù‘¶ƒf[ƒ^‚ğŒŸõ
+                For k = startRowDest To lastRowDest  ' æ—¢å­˜ãƒ‡ãƒ¼ã‚¿ã‚’æ¤œç´¢
                     If keyData = wsDest.Cells(k, 1).Value And _
-                       keyData2 = wsDest.Cells(k, 8).Value Then 'ƒL[ˆê’vi•i–ÚƒR[ƒhEŠÇ—ºj
+                       keyData2 = wsDest.Cells(k, 8).Value Then 'ã‚­ãƒ¼ä¸€è‡´ï¼ˆå“ç›®ã‚³ãƒ¼ãƒ‰ãƒ»ç®¡ç†å®¤ï¼‰
                        
                         If wsDest.Cells(k, 17).Value = "" Or _
                            (wsDest.Cells(k, 17).Value > "" And _
                            (wsDest.Cells(k, 17).Value <> wsDest.Cells(k, 11).Value And _
                             wsDest.Cells(k, 17).Value <> wsDest.Cells(k, 13).Value)) Then
                             
-                            '’•¶”—Ê —Dæ
+                            'æ³¨æ–‡æ•°é‡ å„ªå…ˆ
                             If wsDest.Cells(k, 11).Value <> "" Then
                                 If wkSekouCnt <= (Val(wsDest.Cells(k, 11).Value) - Val(wsDest.Cells(k, 17).Value)) Then
                                     wsDest.Cells(k, 17).Value = Val(wsDest.Cells(k, 17).Value) + wkSekouCnt
@@ -181,7 +181,7 @@ Sub ƒ{ƒ^ƒ“3_Click()
                                     outputCount = outputCount + 1
                                 End If
                             ElseIf wsDest.Cells(k, 13).Value <> "" Then
-                                '”[•i”—Ê Ÿ—Dæ
+                                'ç´å“æ•°é‡ æ¬¡å„ªå…ˆ
                                 If wkSekouCnt <= (Val(wsDest.Cells(k, 13).Value) - Val(wsDest.Cells(k, 17).Value)) Then
                                     wsDest.Cells(k, 17).Value = Val(wsDest.Cells(k, 17).Value) + wkSekouCnt
                                     wkSekouCnt = 0
@@ -198,22 +198,22 @@ Sub ƒ{ƒ^ƒ“3_Click()
                     End If
                 Next k
                 
-                ' Šù‘¶‚ÅŠ„“–‚Å‚«‚È‚©‚Á‚½•ª‚ğ’Ç‰Á
+                ' æ—¢å­˜ã§å‰²å½“ã§ããªã‹ã£ãŸåˆ†ã‚’è¿½åŠ 
                 If insertFlag = True And wkSekouCnt > 0 Then
                     destRow = destRow + 1
                     lastRowDest = destRow
                     
-                    ' •K—v‚É‰‚¶‚Äƒeƒ“ƒvƒŒsƒRƒs[i‘®‚ª—v‚éê‡‚Ì‚İj
+                    ' å¿…è¦ã«å¿œã˜ã¦ãƒ†ãƒ³ãƒ—ãƒ¬è¡Œã‚³ãƒ”ãƒ¼ï¼ˆæ›¸å¼ãŒè¦ã‚‹å ´åˆã®ã¿ï¼‰
                     ' wsDest.Rows(startRowDest).Copy wsDest.Rows(destRow)
                     
-                    wsDest.Cells(destRow, 1).Value = wsSource.Cells(i, 1).Value  ' •i–ÚƒR[ƒh
-                    wsDest.Cells(destRow, 3).Value = ""                          ' ”[•i“ú
-                    wsDest.Cells(destRow, 8).Value = wsSource.Cells(i, keyColSource3).Value ' ŠÇ—º
-                    wsDest.Cells(destRow, 17).Value = wkSekouCnt                  ' {H”—Ê
-                    wsDest.Cells(destRow, 10).Value = wsSource.Cells(i, 48).Value ' w“ü’P‰¿
-                    ' ƒNƒŠƒA
-                    wsDest.Cells(destRow, 11).Value = "" ' ’•¶”—Ê
-                    wsDest.Cells(destRow, 13).Value = "" ' ”[•i”—Ê
+                    wsDest.Cells(destRow, 1).Value = wsSource.Cells(i, 1).Value  ' å“ç›®ã‚³ãƒ¼ãƒ‰
+                    wsDest.Cells(destRow, 3).Value = ""                          ' ç´å“æ—¥
+                    wsDest.Cells(destRow, 8).Value = wsSource.Cells(i, keyColSource3).Value ' ç®¡ç†å®¤
+                    wsDest.Cells(destRow, 17).Value = wkSekouCnt                  ' æ–½å·¥æ•°é‡
+                    wsDest.Cells(destRow, 10).Value = wsSource.Cells(i, 48).Value ' è³¼å…¥å˜ä¾¡
+                    ' ã‚¯ãƒªã‚¢
+                    wsDest.Cells(destRow, 11).Value = "" ' æ³¨æ–‡æ•°é‡
+                    wsDest.Cells(destRow, 13).Value = "" ' ç´å“æ•°é‡
                     outputCount2 = outputCount2 + 1
                 End If
             End If
@@ -222,17 +222,17 @@ Sub ƒ{ƒ^ƒ“3_Click()
     
     If outputCount = 0 And outputCount2 = 0 Then GoTo NoData
     
-    MsgBox "ƒf[ƒ^‚ğƒV[ƒg‚©‚çæ“¾‚µ‚Ü‚µ‚½F" & sheetName & vbCrLf & _
-           "XVƒf[ƒ^ " & outputCount & " Œ" & vbCrLf & _
-           "’Ç‰Áƒf[ƒ^ " & outputCount2 & " Œ", vbInformation
+    MsgBox "ãƒ‡ãƒ¼ã‚¿ã‚’ã‚·ãƒ¼ãƒˆã‹ã‚‰å–å¾—ã—ã¾ã—ãŸï¼š" & sheetName & vbCrLf & _
+           "æ›´æ–°ãƒ‡ãƒ¼ã‚¿ " & outputCount & " ä»¶" & vbCrLf & _
+           "è¿½åŠ ãƒ‡ãƒ¼ã‚¿ " & outputCount2 & " ä»¶", vbInformation
     GoTo Cleanup
 
 NoData:
-    MsgBox "‘ÎÛ‚Ìw“ü[“–‚Ìƒf[ƒ^‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: " & sheetName, vbExclamation
+    MsgBox "å¯¾è±¡ã®è³¼å…¥å……å½“ã®ãƒ‡ãƒ¼ã‚¿ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: " & sheetName, vbExclamation
     GoTo Cleanup
 
 ErrHandler:
-    MsgBox "ƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½: " & Err.Description, vbExclamation
+    MsgBox "ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ: " & Err.Description, vbExclamation
 Cleanup:
     Application.ScreenUpdating = True
     On Error Resume Next
@@ -240,11 +240,11 @@ Cleanup:
     Set srcWorkbook = Nothing
 End Sub
 
-'{s’Ê’m‘æ
+'æ–½è¡Œé€šçŸ¥æ›¸å–è¾¼
 '
 '
 '2025/07/02 O.Kanai
-Sub ƒ{ƒ^ƒ“4_Click()
+Sub ãƒœã‚¿ãƒ³4_Click()
     Dim i As Long, k As Long
     Dim wkNum As Double
     Dim keyCellDest As String
@@ -266,37 +266,37 @@ Sub ƒ{ƒ^ƒ“4_Click()
     Dim keyColSource3 As Long
     Dim outputCount As Long
     Dim outputCount2 As Long
-    Dim keyData As String '•i–ÚƒR[ƒh
+    Dim keyData As String 'å“ç›®ã‚³ãƒ¼ãƒ‰
     Dim keyKanri As String
     Dim insertFlag As Boolean
     Dim wkSekouCnt As Double
 
     keyCellDest = "D2"
     
-    If MsgBox("{s’Ê’m‘‚ğæ‚è‚İ‚µ‚Ü‚·‚©H", vbYesNo + vbQuestion, "Šm”F") = vbNo Then Exit Sub
+    If MsgBox("æ–½è¡Œé€šçŸ¥æ›¸ã‚’å–ã‚Šè¾¼ã¿ã—ã¾ã™ã‹ï¼Ÿ", vbYesNo + vbQuestion, "ç¢ºèª") = vbNo Then Exit Sub
 
     On Error GoTo ErrHandler
     Application.ScreenUpdating = False
     
-    ' 1. ƒtƒ@ƒCƒ‹‘I‘ğ
+    ' 1. ãƒ•ã‚¡ã‚¤ãƒ«é¸æŠ
     filePath = Application.GetOpenFilename( _
         FileFilter:="Excel Files (*.xls; *.xlsx; *.xlsm), *.xls; *.xlsx; *.xlsm", _
-        Title:="{s’Ê’m‘‚ğæ“¾‚·‚éExcelƒtƒ@ƒCƒ‹‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢")
+        Title:="æ–½è¡Œé€šçŸ¥æ›¸ã‚’å–å¾—ã™ã‚‹Excelãƒ•ã‚¡ã‚¤ãƒ«ã‚’é¸æŠã—ã¦ãã ã•ã„")
     If filePath = "False" Then
-        MsgBox "‘€ì‚ªƒLƒƒƒ“ƒZƒ‹‚³‚ê‚Ü‚µ‚½B", vbExclamation
+        MsgBox "æ“ä½œãŒã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚Œã¾ã—ãŸã€‚", vbExclamation
         GoTo Cleanup
     End If
 
-    ' 2. ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+    ' 2. ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã
     Set srcWorkbook = Workbooks.Open(filePath, ReadOnly:=True)
     sheetName = srcWorkbook.ActiveSheet.Name
     
-    ' 3. Šeíİ’è
-    serchColSource = 1   'A—ñF®—”Ô†
-    serchColDest = 1     'A—ñF•i–ÚƒR[ƒh
-    keyColSource = 133   'EC—ñFHí•ª—Ş
-    keyColSource2 = 1    'A—ñF®—”Ô†
-    keyColSource3 = 69   'BQ—ñFŠÇ—ºi’Ç‰Á‚Ì‚İg—pj
+    ' 3. å„ç¨®è¨­å®š
+    serchColSource = 1   'Aåˆ—ï¼šæ•´ç†ç•ªå·
+    serchColDest = 1     'Aåˆ—ï¼šå“ç›®ã‚³ãƒ¼ãƒ‰
+    keyColSource = 133   'ECåˆ—ï¼šå·¥ç¨®åˆ†é¡
+    keyColSource2 = 1    'Aåˆ—ï¼šæ•´ç†ç•ªå·
+    keyColSource3 = 69   'BQåˆ—ï¼šç®¡ç†å®¤ï¼ˆè¿½åŠ æ™‚ã®ã¿ä½¿ç”¨ï¼‰
     startRowSource = 26
     startRowDest = 7
     
@@ -317,28 +317,28 @@ Sub ƒ{ƒ^ƒ“4_Click()
     destRow = lastRowDest
     If startRowSource >= lastRowSource Then GoTo NoData
 
-    outputCount = 0   'XVŒ”
-    outputCount2 = 0  '’Ç‰ÁŒ”
+    outputCount = 0   'æ›´æ–°ä»¶æ•°
+    outputCount2 = 0  'è¿½åŠ ä»¶æ•°
     
     keyKanri = wsDest.Range(keyCellDest).Value
     
-    ' ƒf[ƒ^æ“¾
+    ' ãƒ‡ãƒ¼ã‚¿å–å¾—
     For i = startRowSource To lastRowSource
         keyData = ""
         insertFlag = False
-        If wsSource.Cells(i, keyColSource).Value = "w“ü[“–" Then   'w“ü[“–
+        If wsSource.Cells(i, keyColSource).Value = "è³¼å…¥å……å½“" Then   'è³¼å…¥å……å½“
             insertFlag = True
             keyData = wsSource.Cells(i, keyColSource2).Value
             If keyData <> "" Then
-                '”’læ“¾i¡‰ñ‚ª–³‚¯‚ê‚Î‘O‰ñj
-                If wsSource.Cells(i, 79).Value = "" Then  'CA—ñF¡‰ñ
-                    wkSekouCnt = Val(wsSource.Cells(i, 70).Value)  'BR—ñF‘O‰ñ
+                'æ•°å€¤å–å¾—ï¼ˆä»Šå›ãŒç„¡ã‘ã‚Œã°å‰å›ï¼‰
+                If wsSource.Cells(i, 79).Value = "" Then  'CAåˆ—ï¼šä»Šå›
+                    wkSekouCnt = Val(wsSource.Cells(i, 70).Value)  'BRåˆ—ï¼šå‰å›
                 Else
-                    wkSekouCnt = Val(wsSource.Cells(i, 79).Value)  'CA—ñF¡‰ñ
+                    wkSekouCnt = Val(wsSource.Cells(i, 79).Value)  'CAåˆ—ï¼šä»Šå›
                 End If
                 If wkSekouCnt <> 0 Then
                     For k = startRowDest To lastRowDest
-                        If keyData = wsDest.Cells(k, 1).Value Then 'ƒL[ˆê’vi•i–ÚƒR[ƒhj
+                        If keyData = wsDest.Cells(k, 1).Value Then 'ã‚­ãƒ¼ä¸€è‡´ï¼ˆå“ç›®ã‚³ãƒ¼ãƒ‰ï¼‰
                             If wsDest.Cells(k, 17).Value = "" Or _
                                (wsDest.Cells(k, 17).Value > "" And _
                                (wsDest.Cells(k, 17).Value <> wsDest.Cells(k, 11).Value And _
@@ -377,17 +377,17 @@ Sub ƒ{ƒ^ƒ“4_Click()
                         destRow = destRow + 1
                         lastRowDest = destRow
                         
-                        ' •K—v‚É‰‚¶‚Äƒeƒ“ƒvƒŒsƒRƒs[
+                        ' å¿…è¦ã«å¿œã˜ã¦ãƒ†ãƒ³ãƒ—ãƒ¬è¡Œã‚³ãƒ”ãƒ¼
                         ' wsDest.Rows(startRowDest).Copy wsDest.Rows(destRow)
                         
-                        wsDest.Cells(destRow, 1).Value = wsSource.Cells(i, 1).Value ' •i–ÚƒR[ƒh
-                        wsDest.Cells(destRow, 3).Value = ""                         ' ”[•i“ú
-                        wsDest.Cells(destRow, 8).Value = wsSource.Cells(i, keyColSource3).Value ' ŠÇ—º
-                        wsDest.Cells(destRow, 17).Value = wkSekouCnt               ' {H”—Ê
-                        wsDest.Cells(destRow, 10).Value = wsSource.Cells(i, 48).Value ' w“ü’P‰¿
-                        ' ƒNƒŠƒA
-                        wsDest.Cells(destRow, 11).Value = "" ' ’•¶”—Ê
-                        wsDest.Cells(destRow, 13).Value = "" ' ”[•i”—Ê
+                        wsDest.Cells(destRow, 1).Value = wsSource.Cells(i, 1).Value ' å“ç›®ã‚³ãƒ¼ãƒ‰
+                        wsDest.Cells(destRow, 3).Value = ""                         ' ç´å“æ—¥
+                        wsDest.Cells(destRow, 8).Value = wsSource.Cells(i, keyColSource3).Value ' ç®¡ç†å®¤
+                        wsDest.Cells(destRow, 17).Value = wkSekouCnt               ' æ–½å·¥æ•°é‡
+                        wsDest.Cells(destRow, 10).Value = wsSource.Cells(i, 48).Value ' è³¼å…¥å˜ä¾¡
+                        ' ã‚¯ãƒªã‚¢
+                        wsDest.Cells(destRow, 11).Value = "" ' æ³¨æ–‡æ•°é‡
+                        wsDest.Cells(destRow, 13).Value = "" ' ç´å“æ•°é‡
                         
                         outputCount2 = outputCount2 + 1
                     End If
@@ -398,17 +398,17 @@ Sub ƒ{ƒ^ƒ“4_Click()
     
     If outputCount = 0 And outputCount2 = 0 Then GoTo NoData
     
-    MsgBox "ƒf[ƒ^‚ğƒV[ƒg‚©‚çæ“¾‚µ‚Ü‚µ‚½F" & sheetName & vbCrLf & _
-           "XVƒf[ƒ^ " & outputCount & " Œ" & vbCrLf & _
-           "’Ç‰Áƒf[ƒ^ " & outputCount2 & " Œ", vbInformation
+    MsgBox "ãƒ‡ãƒ¼ã‚¿ã‚’ã‚·ãƒ¼ãƒˆã‹ã‚‰å–å¾—ã—ã¾ã—ãŸï¼š" & sheetName & vbCrLf & _
+           "æ›´æ–°ãƒ‡ãƒ¼ã‚¿ " & outputCount & " ä»¶" & vbCrLf & _
+           "è¿½åŠ ãƒ‡ãƒ¼ã‚¿ " & outputCount2 & " ä»¶", vbInformation
     GoTo Cleanup
 
 NoData:
-    MsgBox "‘ÎÛ‚Ìw“ü[“–‚Ìƒf[ƒ^‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: " & sheetName, vbExclamation
+    MsgBox "å¯¾è±¡ã®è³¼å…¥å……å½“ã®ãƒ‡ãƒ¼ã‚¿ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: " & sheetName, vbExclamation
     GoTo Cleanup
 
 ErrHandler:
-    MsgBox "ƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½: " & Err.Description, vbExclamation
+    MsgBox "ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ: " & Err.Description, vbExclamation
 Cleanup:
     Application.ScreenUpdating = True
     On Error Resume Next
