@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+
+# Output files (generated forms)
+output/
+
+# Virtual environment
+.venv/
+venv/
+env/
